@@ -27,9 +27,7 @@
       "uniqueConstraints": {
         "subscribers_email_unique": {
           "name": "subscribers_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "nullsNotDistinct": false
         }
       },
