@@ -28,8 +28,8 @@ app.post('/api/subscribers', async (req, res) => {
 
     await db
       .insert(subscribers)
-      .values({ email: req.body.email })
-      .onConflictDoNothing({ target: subscribers.email });
+      .values({ emailAddress: email })
+      .onConflictDoNothing({ target: subscribers.emailAddress });
 
     res.sendStatus(200);
   } catch (err) {
