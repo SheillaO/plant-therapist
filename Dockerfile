@@ -9,7 +9,7 @@ RUN apk add --no-cache python3 make g++
 COPY package*.json ./
 
 # Clean installation including devDependencies to run formatting/linting if needed
-RUN npm ci
+RUN npm install
 
 COPY . .
 
@@ -27,7 +27,7 @@ RUN apk add --no-cache tini
 COPY package*.json ./
 
 # Install only production dependencies to maintain a small container footprint
-RUN npm ci --only=production
+RUN npm install --only=production
 
 # Copy built code structure from the builder stage
 COPY --from=builder /app/src ./src
