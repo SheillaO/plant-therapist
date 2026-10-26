@@ -2,6 +2,10 @@
 
 Emotional support tips for people who keep killing their houseplants.
 
+<p align="center">
+  <img src="src/images/Planty.png" alt="Plant Therapist App" width="600">
+</p>
+
 **Live:** https://plant-therapist-51ic.onrender.com
 
 Plant Therapist is a tiny, deliberately real-world subscriber-capture app — built less to be a product and more to be a proving ground for a production-grade CI/CD pipeline: lint and test on every push, build and push a Docker image, deploy automatically, and connect to a real managed Postgres database. No shortcuts, no mocked infrastructure.
