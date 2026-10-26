@@ -82,3 +82,11 @@ jobs:
           tags: |
             ${{ vars.DOCKERHUB_USERNAME }}/cicd:latest
             ${{ vars.DOCKERHUB_USERNAME }}/cicd:${{ github.sha }}
+
+          - name: Trigger Render deploy
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{https://api.render.com/deploy/srv-dbfqmcjl550s738v40n0?key=SaC-jO4I1t0}}
+          IMAGE_URL: docker.io/${{ vars.DOCKERHUB_USERNAME }}/cicd:${{ github.sha }}
+        run: |
+          ENCODED_IMAGE_URL=$(python3 -c 'import os, urllib.parse; print(urllib.parse.quote(os.environ["IMAGE_URL"], safe=""))')
+          curl -fsS -X POST "${RENDER_DEPLOY_HOOK_URL}&imgURL=${ENCODED_IMAGE_URL}"
