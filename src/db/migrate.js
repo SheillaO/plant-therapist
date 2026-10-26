@@ -1,6 +1,6 @@
 require('dotenv/config');
 const { join } = require('node:path');
-const { closeDb, getDb, isBrowserSandbox } = require('./index.js');
+const { closeDb, isBrowserSandbox } = require('./index.js');
 
 async function runMigrations() {
   const migrationsFolder = join(__dirname, '../../drizzle/migrations');
@@ -10,7 +10,27 @@ async function runMigrations() {
       ? require('drizzle-orm/neon-http/migrator')
       : require('drizzle-orm/node-postgres/migrator');
 
-    await migrate(getDb(), { migrationsFolder });
+    let db;
+    if (isBrowserSandbox()) {
+      const { neon } = require('@neondatabase/serverless');
+      const { drizzle } = require('drizzle-orm/neon-http');
+      db = drizzle({
+        client: neon(
+          process.env.MIGRATION_DATABASE_URL || process.env.DATABASE_URL,
+        ),
+      });
+    } else {
+      const { Pool } = require('pg');
+      const { drizzle } = require('drizzle-orm/node-postgres');
+      const pool = new Pool({
+        connectionString:
+          process.env.MIGRATION_DATABASE_URL || process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false },
+      });
+      db = drizzle({ client: pool });
+    }
+
+    await migrate(db, { migrationsFolder });
     console.log('All migrations applied successfully');
   } catch (error) {
     console.error('Migration failed', error);
