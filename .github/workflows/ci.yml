@@ -10,6 +10,22 @@ jobs:
   build-and-test:
     runs-on: ubuntu-24.04
 
+    # Sidecar services spin up containers attached to the runner network layer
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -28,6 +44,11 @@ jobs:
 
       - name: Check linting and code quality (ESLint)
         run: npm run lint
+
+      - name: Run database migrations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        run: npm run db:migrate
 
       - name: Execute automated testing suite (Jest)
         env:
