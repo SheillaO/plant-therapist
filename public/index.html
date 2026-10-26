@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant Therapist – Coming Soon</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">🌱</div>
+      <h1 class="heading">Plant Therapist</h1>
+      <p class="tagline">
+        Emotional support tips for people who keep killing their houseplants.
+      </p>
+      <form action="/api/subscribers" class="form" method="post">
+        <input
+          class="input"
+          type="email"
+          name="email"
+          placeholder="your@email.com"
+          required
+        />
+        <button class="submit-button" id="submit-button" type="submit">
+          Notify Me
+        </button>
+      </form>
+      <p class="note">
+        Launching soon - no plants were harmed in the making of this app. 🌿
+      </p>
+    </div>
+    <script src="scripts.js"></script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "name": "cicd",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "node src/db/migrate.js",
+    "docker:build": "docker build -t cicd .",
+    "docker:run": "docker run -p 3000:3000 --init --env-file .env --rm cicd",
+    "format": "npx prettier . --write",
+    "format:check": "npx prettier . --check",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix",
+    "start": "node src/server.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "express": "^5.2.1",
+    "pg": "^8.20.0",
+    "validator": "^13.15.26"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
+    "jest": "^30.4.2",
+    "prettier": "^3.9.4",
+    "supertest": "^7.2.2"
+  }
+}
