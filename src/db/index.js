@@ -20,9 +20,12 @@ function createPgDb() {
   const { Pool } = require('pg');
   const { drizzle } = require('drizzle-orm/node-postgres');
 
+  const connectionString = getDatabaseUrl();
+  const isLocalDb = /localhost|127\.0\.0\.1/.test(connectionString);
+
   pool = new Pool({
-    connectionString: getDatabaseUrl(),
-    ssl: { rejectUnauthorized: false },
+    connectionString,
+    ssl: isLocalDb ? false : { rejectUnauthorized: false },
   });
 
   pool.on('error', (err) => {
