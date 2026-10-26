@@ -10,7 +10,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-24.04
 
-    # Sidecar services spin up containers attached to the runner network layer
     services:
       postgres:
         image: postgres:16
@@ -86,8 +85,6 @@ jobs:
       - name: Trigger Render deploy
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-          IMAGE_URL: docker.io/${{ vars.DOCKERHUB_USERNAME }}/cicd:${{ github.sha }}
         run: |
           CLEAN_HOOK_URL=$(printf '%s' "$RENDER_DEPLOY_HOOK_URL" | tr -d '[:space:]')
-          ENCODED_IMAGE_URL=$(python3 -c 'import os, urllib.parse; print(urllib.parse.quote(os.environ["IMAGE_URL"], safe=""))')
-          curl -fsS -X POST "${CLEAN_HOOK_URL}&imgURL=${ENCODED_IMAGE_URL}"
+          curl -fsS -X POST "${CLEAN_HOOK_URL}"
