@@ -1,5 +1,5 @@
 {
-  "id": "2a6129d0-8022-4631-b0c9-25712b0561a3",
+  "id": "29e9b7ec-e3ce-4dcc-9582-b7cb111ae212",
   "prevId": "46499ca3-dead-4ae1-ab4a-5f2e37f95ecb",
   "version": "7",
   "dialect": "postgresql",
@@ -14,8 +14,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "email": {
-          "name": "email",
+        "email_address": {
+          "name": "email_address",
           "type": "varchar(254)",
           "primaryKey": false,
           "notNull": true
@@ -25,10 +25,12 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "subscribers_email_unique": {
-          "name": "subscribers_email_unique",
-          "columns": ["email"],
-          "nullsNotDistinct": false
+        "subscribers_email_address_unique": {
+          "name": "subscribers_email_address_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email_address"
+          ]
         }
       },
       "policies": {},
@@ -38,10 +40,10 @@
   },
   "enums": {},
   "schemas": {},
-  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
+  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},
