@@ -83,9 +83,9 @@ jobs:
             ${{ vars.DOCKERHUB_USERNAME }}/cicd:latest
             ${{ vars.DOCKERHUB_USERNAME }}/cicd:${{ github.sha }}
 
-          - name: Trigger Render deploy
+      - name: Trigger Render deploy
         env:
-          RENDER_DEPLOY_HOOK_URL: ${{https://api.render.com/deploy/srv-dbfqmcjl550s738v40n0?key=SaC-jO4I1t0}}
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
           IMAGE_URL: docker.io/${{ vars.DOCKERHUB_USERNAME }}/cicd:${{ github.sha }}
         run: |
           ENCODED_IMAGE_URL=$(python3 -c 'import os, urllib.parse; print(urllib.parse.quote(os.environ["IMAGE_URL"], safe=""))')
