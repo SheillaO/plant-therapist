@@ -22,10 +22,13 @@ async function runMigrations() {
     } else {
       const { Pool } = require('pg');
       const { drizzle } = require('drizzle-orm/node-postgres');
+      const connectionString =
+        process.env.MIGRATION_DATABASE_URL || process.env.DATABASE_URL;
+      const isLocalDb = /localhost|127\.0\.0\.1/.test(connectionString);
+
       const pool = new Pool({
-        connectionString:
-          process.env.MIGRATION_DATABASE_URL || process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
+        connectionString,
+        ssl: isLocalDb ? false : { rejectUnauthorized: false },
       });
       db = drizzle({ client: pool });
     }
