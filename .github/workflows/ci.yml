@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js runtime environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check code formatting consistency (Prettier)
+        run: npm run format:check
+
+      - name: Check linting and code quality (ESLint)
+        run: npm run lint
+
+      # Pass an inline placeholder connection string to satisfy your app's getDatabaseUrl assertion
+      - name: Execute automated testing suite (Jest)
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        run: npm test
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    # Restrict actual Docker Hub modifications to approved merge events on main branch
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx engine
+        uses: docker/setup-buildx-action@v3
+
+      - name: Authenticate against Docker Hub Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_CICOURSE }}
+
+      - name: Build image and push to Docker Hub repository
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ vars.DOCKERHUB_USERNAME }}/cicd:latest
+            ${{ vars.DOCKERHUB_USERNAME }}/cicd:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
