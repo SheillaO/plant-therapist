@@ -8,7 +8,8 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    # Explicitly lock to Ubuntu 24.04 to bypass breaking runtime environment upgrades
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Check out repository code
@@ -17,11 +18,11 @@ jobs:
       - name: Setup Node.js runtime environment
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '22' # Already optimized for Node 24+ forcing logs
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install # Aligned to your updated local Dockerfile installation layer
 
       - name: Check code formatting consistency (Prettier)
         run: npm run format:check
@@ -29,18 +30,16 @@ jobs:
       - name: Check linting and code quality (ESLint)
         run: npm run lint
 
-      # Pass an inline placeholder connection string to satisfy your app's getDatabaseUrl assertion
       - name: Execute automated testing suite (Jest)
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
         run: npm test
 
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Lock this job to 24.04 as well
     needs: build-and-test
-    # Restrict actual Docker Hub modifications to approved merge events on main branch
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -63,5 +62,3 @@ jobs:
           tags: |
             ${{ vars.DOCKERHUB_USERNAME }}/cicd:latest
             ${{ vars.DOCKERHUB_USERNAME }}/cicd:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
