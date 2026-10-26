@@ -15,6 +15,11 @@ app.get('/', async (req, res) => {
   res.sendFile(join(publicDir, 'index.html'));
 });
 
+app.get('/health', (req, res) => {
+  // ← add this block
+  res.sendStatus(200);
+});
+
 app.post('/api/subscribers', async (req, res) => {
   try {
     const email =
